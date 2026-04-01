@@ -1,0 +1,26 @@
+{
+  "name": "pokemon-raider",
+  "version": "1.0.0",
+  "description": "Collect the troller!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EkoBean/Pokemon-Raider.git"
+  },
+  "author": "Eko Bean",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EkoBean/Pokemon-Raider/issues"
+  },
+  "homepage": "https://github.com/EkoBean/Pokemon-Raider#readme",
+  "dependencies": {
+    "discord.js": "^14.26.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0"
+  }
+}
