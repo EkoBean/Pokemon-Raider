@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,13 +16,13 @@ module.exports = {
             console.error(`Error reading help file: ${error}`);
             await interaction.reply({
                 content: 'Sorry, I couldn\'t load the help information right now. 很抱歉，我現在無法載入幫助頁面。',
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
         await interaction.reply({
             content: helpContent,
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     },
 };

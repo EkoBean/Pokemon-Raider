@@ -1,10 +1,15 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const { REST, Routes } = require('discord.js');
+const { Character } = require('@xivapi/nodestone');
+async function playerSearch(lodestoneId) {
+    const parser = new Character();
 
-fs.readdir(path.join(__dirname, 'src'), (err, files) => {
-    if (err) {
-        console.error(err);
-        return;
+    try {
+        await parser.parse({ params: { lodestoneId } });
     }
-    console.log(files);
-});
+    catch (error) {
+        console.error('Error parsing player data:', error);
+        return null;
+    }
+    return { name: result.Name, world: result.World, dc: result.DC };
+}
+playerSearch(2491932);

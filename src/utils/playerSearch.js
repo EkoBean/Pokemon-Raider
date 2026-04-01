@@ -1,13 +1,19 @@
-const playerId = 13554897;
 const { Character } = require('@xivapi/nodestone');
-
-async function main() {
-    const characterId = playerId;
-    const parser = new Character();
-
-    // nodestone 的 parse() 期待一個類 express Request 的物件
-    const result = await parser.parse({ params: { characterId } });
-
-    return { name: result.Name, world: result.World, dc: result.DC };
-}
-main().catch(console.error);
+module.exports = {
+    async playerSearch(lodestoneId) {
+        const characterId = lodestoneId;
+        const parser = new Character();
+        let result;
+        try {
+            result = await parser.parse({ params: { characterId } });
+        }
+        catch (error) {
+            console.error('連線或查詢失敗:', error);
+            return null;
+        }
+        // console.log(result.Name);
+        // console.log(result.World);
+        // console.log(result.DC);
+        return { name: result.Name, world: result.World, dc: result.DC };
+    },
+};
