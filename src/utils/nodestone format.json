@@ -1,0 +1,196 @@
+{
+  ActiveClassjob: 'https://lds-img.finalfantasyxiv.com/h/C/WojNTqMJ_Ye1twvkIhw825zc20.png',
+  Level: 100,
+  Avatar: 'https://img2.finalfantasyxiv.com/f/3bfe8f6bcec3bef8e13a16c580ef0855_745baffc465480ed372e274d50318290fc0.jpg?1775041467',
+  Bio: 'Heyo!<br><br>Check these out!<br><br><a href="https://bit.ly/3BjV1B5" class="outboundLink" rel="nofollow noopener">https://bit.ly/3BjV1B5</a><br><br><br><br>383856274716229662',
+  ClassjobIcons: {
+    List: [
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object]
+    ]
+  },
+  FreeCompany: {
+    ID: '9236460623271949902',
+    Name: 'No More Work',
+    IconLayers: {
+      Bottom: 'https://img2.finalfantasyxiv.com/c/B2b_ddf5a83643a3f346615d64cf78865a86_0d_40x40.png',
+      MIDdle: 'https://img2.finalfantasyxiv.com/c/F1f_09bd537610e5522c1de8c3973ec87ccb_00_40x40.png',
+      Top: 'https://img2.finalfantasyxiv.com/c/S98_2ded70715951ee0c61c7a20295f9bfd4_06_40x40.png'
+    }
+  },
+  Name: 'Vincent Hunt',
+  Rank: 'Serpent Captain',
+  GuardianDeity: {
+    Name: 'Halone, the Fury',
+    Icon: 'https://lds-img.finalfantasyxiv.com/h/P/YMWyuHV7j99fN6m43GcRIutY0k.png'
+  },
+  Nameday: '21st Sun of the 3rd Astral Moon',
+  Portrait: 'https://img2.finalfantasyxiv.com/f/3bfe8f6bcec3bef8e13a16c580ef0855_745baffc465480ed372e274d50318290fl0.jpg?1775041467',       
+  PvpTeam: null,
+  Race: 'Hrothgar',
+  Tribe: 'The Lost',
+  Gender: '♂',
+  World: 'Excalibur',
+  DC: 'Primal',
+  Title: 'Literary Cannon',
+  Town: {
+    Name: 'Limsa Lominsa',
+    Icon: 'https://lds-img.finalfantasyxiv.com/h/j/Xlz3DzGOKmwiDGho5aGWaudRNI.png'
+  },
+  Strength: 443,
+  Dexterity: 5435,
+  Vitality: 5805,
+  Intelligence: 195,
+  Mind: 245,
+  CriticalHitRate: 3172,
+  Determination: 1873,
+  DirectHitRate: 1970,
+  Defense: 3702,
+  MagicDefense: 3702,
+  AttackPower: 5435,
+  SkillSpeed: 420,
+  AttackMagicPotency: 195,
+  HealingMagicPotency: 245,
+  SpellSpeed: 420,
+  Tenacity: 420,
+  Piety: 440,
+  Hp: 165926,
+  MpGpCp: 10000,
+  MpGpCpParameterName: 'MP',
+  Mainhand: {
+    Name: 'Phantom Twinfangs Obscurum',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'VPR',
+    ItemLevel: 'Item Level 775'
+  },
+  Offhand: null,
+  Head: {
+    Name: "Arcanaut's Bicorne of Scouting +1",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: 'Dragon Monocle<a href="/lodestone/playguide/db/item/b677a76f852/" class="db-tooltip__item__mirage__btn"></a>',
+    ClassList: 'ROG NIN VPR',
+    ItemLevel: 'Item Level 745'
+  },
+  Body: {
+    Name: "Arcanaut's Justaucorps of Scouting +2",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: 'Edenmorn Coat of Maiming<a href="/lodestone/playguide/db/item/6cc1c4dfa55/" class="db-tooltip__item__mirage__btn"></a>',   
+    Stain: 'General-purpose Jet Black Dye',
+    ClassList: 'ROG NIN VPR',
+    ItemLevel: 'Item Level 745'
+  },
+  Hands: {
+    Name: "Arcanaut's Gloves of Scouting +1",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: 'Prestige Onion Gauntlets<a href="/lodestone/playguide/db/item/9635d401b3d/" class="db-tooltip__item__mirage__btn"></a>',   
+    Stain: 'Gunmetal Black Dye',
+    ClassList: 'ROG NIN VPR',
+    ItemLevel: 'Item Level 745'
+  },
+  Waist: null,
+  Legs: {
+    Name: "Arcanaut's Slops of Scouting +1",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: 'Troian Breeches of Striking<a href="/lodestone/playguide/db/item/99df86dddd4/" class="db-tooltip__item__mirage__btn"></a>',
+    ClassList: 'ROG NIN VPR',
+    ItemLevel: 'Item Level 745'
+  },
+  Feet: {
+    Name: "Arcanaut's Boots of Scouting +1",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: 'Heirloom Greaves of Maiming<a href="/lodestone/playguide/db/item/0574aa87eca/" class="db-tooltip__item__mirage__btn"></a>',
+    Stain: 'Gunmetal Black Dye',
+    ClassList: 'ROG NIN VPR',
+    ItemLevel: 'Item Level 745'
+  },
+  Earrings: {
+    Name: 'Augmented Historia Earrings of Aiming',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: `The Emperor's New Earrings<a href="/lodestone/playguide/db/item/64c6c9fe08b/" class="db-tooltip__item__mirage__btn"></a>`, 
+    ClassList: 'ARC ROG BRD NIN MCH DNC VPR',
+    ItemLevel: 'Item Level 760'
+  },
+  Necklace: {
+    Name: "Babyface Champion's Gorget of Aiming",
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: `The Emperor's New Necklace<a href="/lodestone/playguide/db/item/5f33d167e05/" class="db-tooltip__item__mirage__btn"></a>`, 
+    ClassList: 'ARC ROG BRD NIN MCH DNC VPR',
+    ItemLevel: 'Item Level 760'
+  },
+  Bracelets: {
+    Name: 'Augmented Historia Wristband of Aiming',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    MirageName: `The Emperor's New Bracelet<a href="/lodestone/playguide/db/item/1b9470c33e2/" class="db-tooltip__item__mirage__btn"></a>`, 
+    ClassList: 'ARC ROG BRD NIN MCH DNC VPR',
+    ItemLevel: 'Item Level 760'
+  },
+  Ring1: {
+    Name: 'Augmented Historia Ring of Aiming',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'ARC ROG BRD NIN MCH DNC VPR',
+    ItemLevel: 'Item Level 760'
+  },
+  Ring2: {
+    Name: 'Occult Ring of Blood',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+  Soulcrystal: {
+    Name: 'Soul of the Viper',
+    ClassList: 'VPR',
+    ItemLevel: 'Item Level 30'
+  }
+}
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+  Soulcrystal: {
+    Name: 'Soul of the Viper',
+    ClassList: 'VPR',
+    ItemLevel: 'Item Level 30'
+  }
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+  Soulcrystal: {
+    Name: 'Soul of the Viper',
+    ClassList: 'VPR',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+  Soulcrystal: {
+    Name: 'Soul of the Viper',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Detail    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Detail    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Detail    DbLink: '<img src="https://lds-img.finalfantasyxiv.com/h/J/YW76_G2zKdEnsPJVgE28mpzqkY.png" width="300" height="60" alt="View Item Details">',
+    ClassList: 'Disciple of War',
+    ItemLevel: 'Item Level 745'
+  },
+  Soulcrystal: {
+    Name: 'Soul of the Viper',
+    ClassList: 'VPR',
+    ItemLevel: 'Item Level 30'
+  }
+}
