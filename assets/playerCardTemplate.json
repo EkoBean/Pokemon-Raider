@@ -1,0 +1,30 @@
+{
+  "embed": {
+    "title": "Troller Name",
+    "description": "This is a description.",
+    "url": "https://na.finalfantasyxiv.com/lodestone/",
+    "color": 5793266,
+    "timestamp": "2026-04-02T11:21:30.944Z",
+    "footer": {
+      "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "text": "Provider Name"
+    },
+    "thumbnail": {
+      "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+    },
+
+
+    "fields": [
+      {
+        "name": "Lodestone Number",
+        "value": "12345678", 
+        "inline": true
+      },
+      {
+        "name": "FFLOG website",
+        "value": "[Troller Name](https://www.fflogs.com/)",
+        "inline": true
+      }
+    ]
+  }
+}

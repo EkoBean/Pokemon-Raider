@@ -11,6 +11,6 @@ module.exports = {
             console.error('連線或查詢失敗:', error);
             return null;
         }
-        return { name: result.Name, world: result.World, dc: result.DC };
+        return { name: result.Name, world: result.World, dc: result.DC, avatar: result.Avatar };
     },
 };

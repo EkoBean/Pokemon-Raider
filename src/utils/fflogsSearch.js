@@ -1,5 +1,5 @@
 const fflogsUrl = 'https://www.fflogs.com/character';
-const RegionDataCenter = require('../../doc/regionDataCenter.json');
+const RegionDataCenter = require('../../assets/regionDataCenter.json');
 
 module.exports = {
     async fflogsSearch(characterName, worldName, dataCenter) {

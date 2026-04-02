@@ -6,11 +6,12 @@ const token = process.env.DISCORD_TOKEN;
 
 // Create a new client instance
 const client = new Client({
-	intents: [GatewayIntentBits.Guilds
-		, GatewayIntentBits.GuildMessages
-		, GatewayIntentBits.MessageContent
-		, GatewayIntentBits.GuildMembers
-	]
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers,
+	],
 });
 
 client.commands = new Collection();
@@ -25,7 +26,8 @@ for (const folder of commandFolders) {
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
-		} else {
+		}
+		else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
