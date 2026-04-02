@@ -1,15 +1,11 @@
-const { REST, Routes } = require('discord.js');
-const { Character } = require('@xivapi/nodestone');
-async function playerSearch(lodestoneId) {
-    const parser = new Character();
+const { fflogsSearch } = require('./src/utils/fflogsSearch');
+async function test() {
 
     try {
-        await parser.parse({ params: { lodestoneId } });
+        await fflogsSearch('Bean Brother', 'Famfrit', 'Primal');
     }
     catch (error) {
         console.error('Error parsing player data:', error);
-        return null;
     }
-    return { name: result.Name, world: result.World, dc: result.DC };
 }
-playerSearch(2491932);
+test();

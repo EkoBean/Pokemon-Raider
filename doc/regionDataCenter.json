@@ -1,0 +1,6 @@
+{
+    "NA": ["Aether", "Primal", "Crystal", "Dynamis"],
+    "JP": ["Elemental", "Gaia", "Mana", "Meteor"],
+    "EU": ["Chaos", "Light"],
+    "OCE": ["Materia"]
+}
