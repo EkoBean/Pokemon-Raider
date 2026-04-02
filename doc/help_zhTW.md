@@ -2,7 +2,6 @@
 ## 指令一覽表
 /ping 會回答你一聲pong
 /user 回傳使用者信息
-/server 回傳伺服器信息
 /troller 用來回報、登記特定玩家的資訊。
      `/troller 12345678 備註：該玩家於副本中惡意拖累隊伍 （可同時附上圖片）`
     lodestone號碼（必填）：請輸入該玩家的 Lodestone ID（數字）。

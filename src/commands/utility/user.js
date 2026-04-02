@@ -1,12 +1,24 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('user').setDescription('Provides information about the user.'),
+	data: new SlashCommandBuilder().setName('user')
+		.setDescription('Provides information about the user.')
+		.setDescriptionLocalizations(
+			{
+				'zh-TW': '提供關於使用者的資訊。',
+			},
+		),
 	async execute(interaction) {
-		// interaction.user is the object representing the User who ran the command
-		// interaction.member is the GuildMember object, which represents the user in the specific guild
-		await interaction.reply(
-			`This command was run by ${interaction.user.username}, who joined on ${interaction.member.joinedAt}.`,
-		);
+		const locale = interaction.locale || interaction.user?.locale || 'en-US';
+		if (locale === 'zh-TW') {
+			await interaction.reply(
+				`嗨， ${interaction.user.username}, 你加入這個伺服器的時間是 ${interaction.member.joinedAt}.`,
+			);
+		}
+		else {
+			await interaction.reply(
+				`Hi, ${interaction.user.username}, you joined this server on ${interaction.member.joinedAt}.`,
+			);
+		}
 	},
 };
