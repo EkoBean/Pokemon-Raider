@@ -10,7 +10,12 @@ const template = JSON.parse(fs.readFileSync(templatePath, 'utf8'));
 
 module.exports = {
 	data: new SlashCommandBuilder().setName('troller')
-		.setDescription('Catch a troller into pokemon bank.')
+		.setDescription('Catch a troller into your Pokémon bank.')
+		.setDescriptionLocalizations(
+			{
+				'zh-TW': '把戳仔收進屬於大家的寶可夢銀行。',
+			},
+		)
 		.addIntegerOption(
 			option => option.setName('lodestone_id')
 				.setDescription('The troller\'s lodestone URL ID.')
