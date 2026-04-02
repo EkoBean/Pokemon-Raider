@@ -60,22 +60,32 @@ module.exports = {
 
 		const reporter = { name: interaction.user.username, avatar: interaction.user.displayAvatarURL() };
 
+		if (playerInfo === 404) {
+			await interaction.reply(locale === 'zh-TW'
+				? { content: '查無此玩家，請確認Lodestone ID是否正確。', flags: MessageFlags.Ephemeral }
+				: { content: 'Player not found. Please check the Lodestone ID.', flags: MessageFlags.Ephemeral },
+			);
+			return;
+		}
+		if (playerInfo === 500) {
+			await interaction.reply(locale === 'zh-TW'
+				? { content: '伺服器連線異常，請稍後再試。', flags: MessageFlags.Ephemeral }
+				: { content: 'Lodestone server error. Please try again later.', flags: MessageFlags.Ephemeral },
+			);
+			return;
+		}
 		if (!playerInfo) {
-			await interaction.reply(locale === 'zh-TW' ?
-				{
-					content: '無法找到該玩家的資料，請確認Lodestone ID是否正確。',
-					flags: MessageFlags.Ephemeral,
-				} : {
-					content: 'Unable to find player information. Please check if the Lodestone ID is correct.',
-					flags: MessageFlags.Ephemeral,
-				});
+			await interaction.reply(locale === 'zh-TW'
+				? { content: '查詢發生未知錯誤，請聯絡管理員。', flags: MessageFlags.Ephemeral }
+				: { content: 'Unknown error occurred. Please contact admin.', flags: MessageFlags.Ephemeral },
+			);
 			return;
 		}
 
 		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
 
 		const embedData = JSON.parse(JSON.stringify(template.embed));
-		embedData.title = playerInfo.name;
+		embedData.title = `${playerInfo.name} @${playerInfo.world}`;
 		embedData.url = lodestoneUrl + lodestoneId;
 		embedData.timestamp = new Date().toISOString();
 		embedData.footer.text = reporter.name;
