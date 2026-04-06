@@ -65,21 +65,21 @@ module.exports = {
 
 		const reporter = { name: interaction.user.username, avatar: interaction.user.displayAvatarURL() };
 
-		if (playerInfo === 404) {
+		if (playerInfo >= 404 && playerInfo < 500) {
 			await interaction.reply(locale === 'zh-TW'
-				? { content: '查無此玩家，請確認Lodestone ID是否正確。', flags: MessageFlags.Ephemeral }
+				? { content: '查無此玩家，請確認Lodestone ID是否正確。' + lodestoneUrl + lodestoneId, flags: MessageFlags.Ephemeral }
 				: { content: 'Player not found. Please check the Lodestone ID.', flags: MessageFlags.Ephemeral },
 			);
 			return;
 		}
-		if (playerInfo === 500) {
+		else if (playerInfo >= 500 && playerInfo < 600) {
 			await interaction.reply(locale === 'zh-TW'
 				? { content: '伺服器連線異常，請稍後再試。', flags: MessageFlags.Ephemeral }
 				: { content: 'Lodestone server error. Please try again later.', flags: MessageFlags.Ephemeral },
 			);
 			return;
 		}
-		if (!playerInfo) {
+		else if (!playerInfo) {
 			await interaction.reply(locale === 'zh-TW'
 				? { content: '查詢發生未知錯誤，請聯絡管理員。', flags: MessageFlags.Ephemeral }
 				: { content: 'Unknown error occurred. Please contact admin.', flags: MessageFlags.Ephemeral },
