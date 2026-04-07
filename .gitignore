@@ -1,5 +1,6 @@
 /node_modules
 /dist
 /.vscode
+/db/data/*.db
 config.json
 .env
