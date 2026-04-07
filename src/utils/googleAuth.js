@@ -6,7 +6,6 @@ const oauth2Client = new google.auth.OAuth2(
 	process.env.GOOGLE_REDIRECT_URI,
 );
 
-// 產生授權連結，/setup 指令會用這個
 function generateAuthUrl(userId, guildId, spreadsheetId) {
 	const state = Buffer.from(JSON.stringify({
 		userId,
@@ -22,8 +21,7 @@ function generateAuthUrl(userId, guildId, spreadsheetId) {
 	});
 }
 
-// 用 code 換 tokens
-async function exchangeCodeForTokens(code) {
+async function codeToToken(code) {
 	const { tokens } = await oauth2Client.getToken(code);
 	return tokens;
 }
@@ -40,4 +38,4 @@ function createAuthClient(refreshToken) {
 	return client;
 }
 
-module.exports = { generateAuthUrl, exchangeCodeForTokens, createAuthClient };
+module.exports = { generateAuthUrl, codeToToken, createAuthClient };
