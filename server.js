@@ -10,7 +10,6 @@ const port = redirectUri ? new URL(redirectUri).port : 3000;
 app.get('/callback', async (req, res) => {
 	const state = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
 	const code = req.query.code;
-	res.send('OAuth callback received!');
 	try {
 		const tokens = await codeToToken(code);
 
@@ -26,6 +25,8 @@ app.get('/callback', async (req, res) => {
 		else {
 			console.error('Invalid state: both userId and guildId are present or both are missing.');
 		}
+		res.send('OAuth callback received!');
+
 
 	}
 	catch (error) {

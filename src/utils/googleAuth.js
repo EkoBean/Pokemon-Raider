@@ -34,7 +34,6 @@ function createAuthClient(refreshToken) {
 		process.env.GOOGLE_REDIRECT_URI,
 	);
 	client.setCredentials({ refresh_token: refreshToken });
-	// eslint-disable-next-line indent
 	return client;
 }
 

@@ -1,10 +1,10 @@
-const db = require('./src/db/dbInit.js');
+const { savePersonalToken, saveGuildToken } = require('./src/db/tokenQuery.js');
 
 async function test() {
 	const state = {
-		userId: '45612377',
-		guildId: null,
-		spreadsheetId: 'xxx1247777777789789456',
+		userId: null,
+		guildId: '987654321',
+		spreadsheetId: 'xxx124778xxx789789456',
 	};
 	const tokens = {
 		access_token: 'xxxxxxx',
@@ -12,35 +12,12 @@ async function test() {
 	};
 	try {
 		if (state.userId && !state.guildId) {
-			const result = db.prepare(`
-                INSERT OR REPLACE INTO personal_tokens
-                (user_id, sheet_id, access_token, refresh_token, updated_at)
-                VALUES (?, ?, ?, ?, datetime('now'))`)
-				.run(
-					state.userId,
-					state.spreadsheetId,
-					tokens.access_token,
-					tokens.refresh_token,
-				);
-			if (result.changes > 0) {
-				console.log('personal token updated');
-			}
+			const result = savePersonalToken(state.userId, state.spreadsheetId, tokens.access_token, tokens.refresh_token);
+			if (result.changes > 0) console.log('personal token updated');
 		}
 		else if (state.guildId && !state.userId) {
-			const result = db.prepare(`
-                     INSERT OR REPLACE INTO guild_tokens
-                    (guild_id, sheet_id, access_token, refresh_token, updated_at)
-                     VALUES (?, ?, ?, ?, datetime('now'))
-                    `)
-				.run(
-					state.guildId,
-					state.spreadsheetId,
-					tokens.access_token,
-					tokens.refresh_token,
-				);
-			if (result.changes > 0) {
-				console.log('guild token updated');
-			}
+			const result = saveGuildToken(state.guildId, state.spreadsheetId, tokens.access_token, tokens.refresh_token);
+			if (result.changes > 0) console.log('guild token updated');
 		}
 		else {
 			console.error('Invalid state: both userId and guildId are present or both are missing.');

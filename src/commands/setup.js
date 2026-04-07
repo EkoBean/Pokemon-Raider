@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-const { hashApiKey } = require('../utils/hashApiKey');
+const { hashApiKey } = require('../utils/encrypt');
 
 module.exports = {
 	data: new SlashCommandBuilder()

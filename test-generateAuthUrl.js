@@ -21,7 +21,7 @@ async function test() {
 		});
 	}
 	try {
-		const object = await generateAuthUrl('2654897', '987654321', '1Yj6d0ceHpr1tkgpAQW0p1M7s8zV5boJGvlpHRbW2xOk');
+		const object = await generateAuthUrl(null, '987654321', '1Yj6d0ceHpr1tkgpAQW0p1M7s8zV5boJGvlpHRbW2xOk');
 		console.log(object);
 	}
 	catch (error) {
