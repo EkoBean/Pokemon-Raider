@@ -1,30 +1,51 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { generateAuthUrl } = require('../../utils/googleAuth.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('setup')
 		.setDescription('Set up google sheet url for this server.')
 		.setDescriptionLocalizations({
-			zh_TW: '在此伺服器中榜定Google 表單 URL。',
+			'zh-TW': '在此伺服器中榜定Google 表單 URL。',
 		})
 		.addStringOption(
 			option => option.setName('sheet_url')
-				.setDescription('Google Sheets URL.')
+				.setDescription('Please provide the Google Sheets URL.')
 				.setDescriptionLocalizations(
 					{
-						'zh-TW': 'Google 表單 URL。',
-					}).setRequired(false)),
+						'zh-TW': '請貼上Google表單的網址。',
+					}).setRequired(true)),
 	cooldown: 5,
-	dev: true,
+	dev: false,
 	async execute(interaction) {
 		const sheetUrl = interaction.options.getString('sheet_url');
-		const guideId = interaction.guildId;
+		const spreadsheetId = sheetUrl ? sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1] : null;
+		const guildId = interaction.guildId;
 		const userId = interaction.user.id;
+		const authContext = guildId ?
+			{
+				userId: null,
+				guildId,
+				spreadsheetId,
+			} : {
+				userId,
+				guildId: null,
+				spreadsheetId,
+			};
 
 		if (!sheetUrl) {
 			await interaction.reply({ content: 'Please provide a Google Sheets URL to set up the server.', flags: MessageFlags.Ephemeral })
 				.replylocalization('zh-TW', { content: '請提供 Google 表單 URL 來設定表單。', flags: MessageFlags.Ephemeral });
 			return;
 		}
+
+		const authUrl = generateAuthUrl(authContext);
+
+		await interaction.reply(
+			{
+				content: `Please authorize the bot by visiting this URL: ${authUrl}`,
+				flags: MessageFlags.Ephemeral,
+			},
+		);
 	},
 };

@@ -6,11 +6,11 @@ const oauth2Client = new google.auth.OAuth2(
 	process.env.GOOGLE_REDIRECT_URI,
 );
 
-function generateAuthUrl(userId, guildId, spreadsheetId) {
+function generateAuthUrl(authContext) {
 	const state = Buffer.from(JSON.stringify({
-		userId,
-		guildId,
-		spreadsheetId,
+		userId: authContext.userId,
+		guildId: authContext.guildId,
+		spreadsheetId: authContext.spreadsheetId,
 	})).toString('base64');
 
 	return oauth2Client.generateAuthUrl({
