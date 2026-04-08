@@ -141,7 +141,7 @@ async function initSheet(sheets, spreadsheetId) {
 							'startRowIndex': 0,
 							'endRowIndex': 1,
 							'startColumnIndex': 0,
-							'endColumnIndex': 7,
+							'endColumnIndex': 9,
 						},
 						'rows': [
 							{
@@ -150,7 +150,9 @@ async function initSheet(sheets, spreadsheetId) {
 									{ userEnteredValue: { stringValue: 'Lodestone Number' } },
 									{ userEnteredValue: { stringValue: 'FFLOGS Site' } },
 									{ userEnteredValue: { stringValue: 'Comment' } },
-									{ userEnteredValue: { stringValue: 'Images' } },
+									{ userEnteredValue: { stringValue: 'Image1' } },
+									{ userEnteredValue: { stringValue: 'Image2' } },
+									{ userEnteredValue: { stringValue: 'Image3' } },
 									{ userEnteredValue: { stringValue: 'Reporter' } },
 									{ userEnteredValue: { stringValue: 'Date' } },
 								],
@@ -165,7 +167,7 @@ async function initSheet(sheets, spreadsheetId) {
 							sheetId: SHEET_ID,
 							dimension: 'COLUMNS',
 							startIndex: 3,
-							endIndex: 5,
+							endIndex: 4,
 						},
 						properties: {
 							pixelSize: 350,
@@ -207,35 +209,34 @@ async function appendData(userContext, data) {
 
 	const playerName = `=HYPERLINK("${dataToAppend.lodestoneUrl}", "${dataToAppend.characterName}")`;
 	const fflogsLink = `=HYPERLINK("${dataToAppend.fflogsLink}", "FFLogs")`;
-	const images = dataToAppend.images.length === 0 ?
-		'' :
-		`=${dataToAppend.images.filter(Boolean).map(url => `"${url}"`).join(' & CHAR(10) &')}`;
+	const images = dataToAppend.images.map(url => url ? `=HYPERLINK("${url}", "Image Link")` : ' ');
 
 	const currentSheets = await getMetaData(userContext);
 	if (!currentSheets.sheets.find(sheet => sheet.properties.title === 'Pokemon Bank')) {
 		await initSheet(sheets, spreadsheetId);
 	}
-	// const response = sheets.spreadsheets.values.append({
-	// 	spreadsheetId,
-	// 	range: 'Pokemon Bank!A1',
-	// 	valueInputOption: 'USER_ENTERED',
-	// 	resource: {
-	// 		values: [
-	// 			[
-	// 				playerName,
-	// 				dataToAppend.lodestoneId,
-	// 				fflogsLink,
-	// 				dataToAppend.comment ? dataToAppend.comment : ' ',
-	// 				images,
-	// 				dataToAppend.reporterName,
-	// 				getLocalDateTimeString(),
-	// 			],
-	// 		],
-	// 	},
-	// });
+	const response = sheets.spreadsheets.values.append({
+		spreadsheetId,
+		range: 'Pokemon Bank!A1',
+		valueInputOption: 'USER_ENTERED',
+		resource: {
+			values: [
+				[
+					playerName,
+					dataToAppend.lodestoneId,
+					fflogsLink,
+					dataToAppend.comment ? dataToAppend.comment : ' ',
+					images[0] ? images[0] : ' ',
+					images[1] ? images[1] : ' ',
+					images[2] ? images[2] : ' ',
+					dataToAppend.reporterName,
+					getLocalDateTimeString(),
+				],
+			],
+		},
+	});
 
-	// return response;
-	// return newSheet;
+	return response;
 
 }
 

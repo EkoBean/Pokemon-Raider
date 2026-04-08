@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { playerSearch } = require('../../utils/playerSearch.js');
 const { fflogsSearch } = require('../../utils/fflogsSearch.js');
+const { getPersonalToken, getGuildToken } = require('../../db/tokenQuery.js');
+const { appendData } = require('../../utils/googleSheets.js');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -62,7 +64,10 @@ module.exports = {
 		const screenshot2 = interaction.options.getAttachment('screenshot2');
 		const screenshot3 = interaction.options.getAttachment('screenshot3');
 		const playerInfo = await playerSearch(lodestoneId);
+		const guildId = interaction.guildId ?? null;
+		const userId = interaction.user.id;
 
+		const images = [screenshot1?.url, screenshot2?.url, screenshot3?.url].filter(Boolean);
 		const reporter = { name: interaction.user.username, avatar: interaction.user.displayAvatarURL() };
 
 		if (playerInfo === 404) {
@@ -89,6 +94,35 @@ module.exports = {
 
 		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
 
+		const dbToken = guildId ? getGuildToken(guildId) : getPersonalToken(userId);
+
+		if (dbToken) {
+			const userContext = guildId ?
+				{ guildId, userId: null } :
+				{ guildId: null, userId };
+			const dataToAppend = {
+				characterName: playerInfo.name,
+				lodestoneId: lodestoneId,
+				lodestoneUrl: lodestoneUrl,
+				fflogsLink: fflogsLink,
+				comment: comment ? comment : '',
+				images: images,
+				reporterName: reporter.name,
+			};
+			try {
+				await appendData(userContext, dataToAppend);
+			}
+			catch (error) {
+				console.error('Error appending to sheet:', error);
+				await interaction.reply(locale === 'zh-TW'
+					? { content: '將資料寫入試算表時發生錯誤，請至GitHub回報錯誤。https://github.com/EkoBean/Pokemon-Raider/issues', flags: MessageFlags.Ephemeral }
+					: { content: 'Error writing to spreadsheet. Please report the issue on GitHub. https://github.com/EkoBean/Pokemon-Raider/issues', flags: MessageFlags.Ephemeral },
+				);
+				return;
+			}
+
+		}
+
 		const embedData = JSON.parse(JSON.stringify(template.embed));
 		embedData.title = `${playerInfo.name} @${playerInfo.world}`;
 		embedData.url = lodestoneUrl;
@@ -101,29 +135,22 @@ module.exports = {
 		embedData.fields[1].value = `[${playerInfo?.name}](${fflogsLink})`;
 
 
-		const images = [screenshot1?.url, screenshot2?.url, screenshot3?.url].filter(Boolean);
-		if (locale === 'zh-TW') {
-			await interaction.reply(
-				{
-					content: `
+		await interaction.reply(locale === 'zh-TW'
+			? {
+				content: `
                     **收服到寶可夢了！**
                     `,
-					embeds: [embedData],
-					files: images,
-				},
-			);
-		}
-		else {
-			await interaction.reply(
-				{
-					content: `
+				embeds: [embedData],
+				files: images,
+			} : {
+				content: `
                     **Caught a Pokémon!**
                     `,
-					embeds: [embedData],
-					files: images,
-				},
+				embeds: [embedData],
+				files: images,
+			},
+		);
 
-			);
-		}
+
 	},
 };
