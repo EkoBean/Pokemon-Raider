@@ -54,9 +54,9 @@ module.exports = {
 	cooldown: 5,
 	dev: false,
 	async execute(interaction) {
-		const lodestoneUrl = 'https://na.finalfantasyxiv.com/lodestone/character/';
-		const locale = interaction.locale || interaction.user?.locale || 'en-US';
 		const lodestoneId = interaction.options.getInteger('lodestone_id');
+		const lodestoneUrl = lodestoneId ? 'https://na.finalfantasyxiv.com/lodestone/character/' + lodestoneId : null;
+		const locale = interaction.locale || interaction.user?.locale || 'en-US';
 		const comment = interaction.options.getString('comment') || '';
 		const screenshot1 = interaction.options.getAttachment('screenshot1');
 		const screenshot2 = interaction.options.getAttachment('screenshot2');
@@ -91,7 +91,7 @@ module.exports = {
 
 		const embedData = JSON.parse(JSON.stringify(template.embed));
 		embedData.title = `${playerInfo.name} @${playerInfo.world}`;
-		embedData.url = lodestoneUrl + lodestoneId;
+		embedData.url = lodestoneUrl;
 		embedData.timestamp = new Date().toISOString();
 		embedData.footer.text = reporter.name;
 		embedData.footer.icon_url = reporter.avatar;

@@ -26,7 +26,6 @@ async function codeToToken(code) {
 	return tokens;
 }
 
-// 用 refresh_token 建立有效的 auth client
 function createAuthClient(refreshToken) {
 	const client = new google.auth.OAuth2(
 		process.env.GOOGLE_CLIENT_ID,

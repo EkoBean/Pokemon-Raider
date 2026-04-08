@@ -1,11 +1,20 @@
-const { savePersonalToken, saveGuildToken } = require('./src/db/tokenQuery.js');
+const { getMetaData, appendData } = require('./src/utils/googleSheets.js');
 
 async function test() {
-	const sheetUrl = 'https://docs.google.com/spreadsheets/d/1Yj6d0ceHpr1tkgpAQW0p1M7s8zV5boJGvlpHRbW2xOk/edit?gid=0#gid=0';
-	const sheetId = sheetUrl ? sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1] : null;
-	const url = URL.parse(sheetUrl);
-	console.log('sheetId :>> ', sheetId);
-	console.log('url :>> ', url);
+	const userContext = {
+		userId: '1234567890',
+		guildId: '987654321',
+	};
+	const result = await appendData(userContext, {
+		characterName: 'Test Character',
+		lodestoneId: '12345678',
+		lodestoneUrl: 'https://na.finalfantasyxiv.com/lodestone/character/12345678',
+		fflogsLink: 'https://www.fflogs.com/character/12345678',
+		comment: '',
+		images: [],
+		reporterName: 'Test Reporter',
+	});
+	console.log(result);
 
 }
 try {

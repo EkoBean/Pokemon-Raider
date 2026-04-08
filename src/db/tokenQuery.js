@@ -17,4 +17,16 @@ function saveGuildToken(guildId, spreadsheetId, accessToken, refreshToken) {
   `).run(guildId, spreadsheetId, encrypt(accessToken), encrypt(refreshToken));
 }
 
-module.exports = { savePersonalToken, saveGuildToken };
+function getPersonalToken(userId) {
+	return db.prepare(`
+    SELECT * FROM personal_tokens WHERE user_id = ?
+  `).get(userId);
+}
+
+function getGuildToken(guildId) {
+	return db.prepare(`
+    SELECT * FROM guild_tokens WHERE guild_id = ?
+  `).get(guildId);
+}
+
+module.exports = { savePersonalToken, saveGuildToken, getPersonalToken, getGuildToken };
