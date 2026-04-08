@@ -20,7 +20,7 @@ function getSheetClient(userContext) {
 function getLocalDateTimeString() {
 	const now = new Date();
 	const pad = n => n.toString().padStart(2, '0');
-	return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+	return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
 async function getMetaData(userContext) {
@@ -29,13 +29,173 @@ async function getMetaData(userContext) {
 	const response = await sheets.spreadsheets.get({
 		spreadsheetId,
 	});
-
 	return response.data;
+}
+
+async function getSheetData(userContext, range) {
+	const { sheets, spreadsheetId } = getSheetClient(userContext);
+	const response = await sheets.spreadsheets.values.get({
+		spreadsheetId,
+		range,
+	});
+	return response.data.values;
+}
+
+async function initSheet(sheets, spreadsheetId) {
+	const newSheet = await sheets.spreadsheets.batchUpdate({
+		spreadsheetId,
+		resource: {
+			requests: [
+				{
+					addSheet: {
+						properties: {
+							title: 'Pokemon Bank',
+						},
+					},
+				},
+			],
+		},
+	});
+	const SHEET_ID = newSheet.data.replies[0].addSheet.properties.sheetId;
+	const formatInit = await sheets.spreadsheets.batchUpdate({
+		spreadsheetId,
+		resource: {
+			requests: [
+				{
+					'repeatCell': {
+						'range': {
+							'sheetId': SHEET_ID,
+						},
+						'cell': {
+							'userEnteredFormat': {
+								horizontalAlignment: 'LEFT',
+								verticalAlignment: 'MIDDLE',
+								wrapStrategy: 'WRAP',
+							},
+						},
+						fields: 'userEnteredFormat(horizontalAlignment,verticalAlignment,wrapStrategy)',
+					},
+				},
+				{
+					'repeatCell': {
+						'range': {
+							'sheetId': SHEET_ID,
+							'startRowIndex': 0,
+							'endRowIndex': 0,
+							'startColumnIndex': 6,
+							'endColumnIndex': 6,
+						},
+						'cell': {
+							'userEnteredFormat': {
+								numberFormat: {
+									type: 'TEXT',
+								},
+							},
+						},
+						fields: 'userEnteredFormat.numberFormat',
+					},
+				},
+				{
+					'repeatCell': {
+						'range': {
+							'sheetId': SHEET_ID,
+							'startRowIndex': 0,
+							'endRowIndex': 1,
+						},
+						'cell': {
+							'userEnteredFormat': {
+								'backgroundColor': {
+									'red': 1.0,
+									'green': 0.94,
+									'blue': 0.8,
+								},
+								'horizontalAlignment': 'LEFT',
+								'textFormat': {
+									'foregroundColor': {
+										'red': 0,
+										'green': 0,
+										'blue': 0,
+									},
+									'fontSize': 12,
+								},
+							},
+						},
+						'fields': 'userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)',
+					},
+				},
+				{
+					'updateSheetProperties': {
+						'properties': {
+							'sheetId': SHEET_ID,
+							'gridProperties': {
+								'frozenRowCount': 1,
+							},
+						},
+						'fields': 'gridProperties.frozenRowCount',
+					},
+				},
+				{
+					'updateCells': {
+						'range': {
+							'sheetId': SHEET_ID,
+							'startRowIndex': 0,
+							'endRowIndex': 1,
+							'startColumnIndex': 0,
+							'endColumnIndex': 7,
+						},
+						'rows': [
+							{
+								'values': [
+									{ userEnteredValue: { stringValue: 'Player Name' } },
+									{ userEnteredValue: { stringValue: 'Lodestone Number' } },
+									{ userEnteredValue: { stringValue: 'FFLOGS Site' } },
+									{ userEnteredValue: { stringValue: 'Comment' } },
+									{ userEnteredValue: { stringValue: 'Images' } },
+									{ userEnteredValue: { stringValue: 'Reporter' } },
+									{ userEnteredValue: { stringValue: 'Date' } },
+								],
+							},
+						],
+						fields: 'userEnteredValue',
+					},
+				},
+				{
+					updateDimensionProperties: {
+						range: {
+							sheetId: SHEET_ID,
+							dimension: 'COLUMNS',
+							startIndex: 3,
+							endIndex: 5,
+						},
+						properties: {
+							pixelSize: 350,
+						},
+						fields: 'pixelSize',
+					},
+				},
+				{
+					updateDimensionProperties: {
+						range: {
+							sheetId: SHEET_ID,
+							dimension: 'COLUMNS',
+							startIndex: 0,
+							endIndex: 3,
+						},
+						properties: {
+							pixelSize: 150,
+						},
+						fields: 'pixelSize',
+					},
+				},
+			],
+		},
+	});
+	return formatInit;
 }
 
 async function appendData(userContext, data) {
 	const { sheets, spreadsheetId } = getSheetClient(userContext);
-	const appendData = {
+	const dataToAppend = {
 		characterName: data.characterName,
 		lodestoneId: data.lodestoneId,
 		lodestoneUrl: data.lodestoneUrl,
@@ -45,32 +205,37 @@ async function appendData(userContext, data) {
 		reporterName: data.reporterName,
 	};
 
-	const playerName = `=HYPERLINK("${appendData.lodestoneUrl}", "${appendData.characterName}")`;
-	const fflogsLink = `=HYPERLINK("${appendData.fflogsLink}", "FFLogs")`;
-	const images = appendData.images.length === 0 ?
+	const playerName = `=HYPERLINK("${dataToAppend.lodestoneUrl}", "${dataToAppend.characterName}")`;
+	const fflogsLink = `=HYPERLINK("${dataToAppend.fflogsLink}", "FFLogs")`;
+	const images = dataToAppend.images.length === 0 ?
 		'' :
-		`=${appendData.images.filter(Boolean).map(url => `"${url}"`).join(' & CHAR(10) &')}`;
+		`=${dataToAppend.images.filter(Boolean).map(url => `"${url}"`).join(' & CHAR(10) &')}`;
 
-	const response = await sheets.spreadsheets.values.append({
-		spreadsheetId,
-		range: 'Pokemon Bank!A1',
-		valueInputOption: 'USER_ENTERED',
-		resource: {
-			values: [
-				[
-					playerName,
-					appendData.lodestoneId,
-					fflogsLink,
-					appendData.comment ? appendData.comment : ' ',
-					images,
-					appendData.reporterName,
-					getLocalDateTimeString(),
-				],
-			],
-		},
-	});
+	const currentSheets = await getMetaData(userContext);
+	if (!currentSheets.sheets.find(sheet => sheet.properties.title === 'Pokemon Bank')) {
+		await initSheet(sheets, spreadsheetId);
+	}
+	// const response = sheets.spreadsheets.values.append({
+	// 	spreadsheetId,
+	// 	range: 'Pokemon Bank!A1',
+	// 	valueInputOption: 'USER_ENTERED',
+	// 	resource: {
+	// 		values: [
+	// 			[
+	// 				playerName,
+	// 				dataToAppend.lodestoneId,
+	// 				fflogsLink,
+	// 				dataToAppend.comment ? dataToAppend.comment : ' ',
+	// 				images,
+	// 				dataToAppend.reporterName,
+	// 				getLocalDateTimeString(),
+	// 			],
+	// 		],
+	// 	},
+	// });
 
-	return response;
+	// return response;
+	// return newSheet;
 
 }
 

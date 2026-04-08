@@ -14,8 +14,10 @@ async function test() {
 		images: [],
 		reporterName: 'Test Reporter',
 	});
-	console.log(result);
+	// console.log(result);
 
+	// const metaData = await getMetaData(userContext);
+	// console.log(metaData);
 }
 try {
 	test();
