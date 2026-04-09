@@ -3,10 +3,10 @@ const { savePersonalToken, saveGuildToken } = require('./src/db/tokenQuery.js');
 
 const express = require('express');
 const app = express();
-const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+// const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 const fs = require('node:fs');
 
-const port = redirectUri ? new URL(redirectUri).port : 3000;
+const port = process.env.PORT || 3000;
 // home page
 app.get('/', (req, res) => {
 	res.send('Pokemon Raider Bot');
