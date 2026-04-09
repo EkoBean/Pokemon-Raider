@@ -21,8 +21,7 @@
 成為神奇寶貝訓練家就從一張整齊的表單開始。
 
 建立踩雷資料庫，再也不用擔心黑單滿出來！
-
-<img width="1795" height="514" alt="Screenshot 2026-04-10 010518" src="https://github.com/user-attachments/assets/0991199f-598d-4bfc-835f-85ffe5139d90" />
+<img width="469" height="888" alt="Screenshot 2026-04-10 010204" src="https://github.com/user-attachments/assets/4471ff0c-b856-4e0a-9115-6c315a4c04b5" />
 
 ### ``/setup``
 在Discord對話頻道中，使用setup對話指令，複製貼上既有表單的連結，即可開始進行Google表單授權步驟。
