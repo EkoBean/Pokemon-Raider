@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
+require('./server.js');
 
 // Create a new client instance
 const client = new Client({

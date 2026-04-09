@@ -7,6 +7,19 @@ const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 const fs = require('node:fs');
 
 const port = redirectUri ? new URL(redirectUri).port : 3000;
+// home page
+app.get('/', (req, res) => {
+	res.send('Pokemon Raider Bot');
+});
+
+// privacy policy
+app.get('/privacy', (req, res) => {
+	res.send(`Privacy Policy
+
+This bot accesses Google Sheets on behalf of users who authorize it.
+We do not store your data beyond the active session.
+Contact: https://github.com/EkoBean/Pokemon-Raider/issues`);
+});
 
 // oAuth callback endpoint
 app.get('/callback', async (req, res) => {
