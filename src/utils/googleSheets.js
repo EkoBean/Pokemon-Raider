@@ -141,7 +141,7 @@ async function initSheet(sheets, spreadsheetId) {
 							'startRowIndex': 0,
 							'endRowIndex': 1,
 							'startColumnIndex': 0,
-							'endColumnIndex': 9,
+							'endColumnIndex': 10,
 						},
 						'rows': [
 							{
@@ -149,6 +149,7 @@ async function initSheet(sheets, spreadsheetId) {
 									{ userEnteredValue: { stringValue: 'Player Name' } },
 									{ userEnteredValue: { stringValue: 'Lodestone Number' } },
 									{ userEnteredValue: { stringValue: 'FFLOGS Site' } },
+									{ userEnteredValue: { stringValue: 'Rarity' } },
 									{ userEnteredValue: { stringValue: 'Comment' } },
 									{ userEnteredValue: { stringValue: 'Image1' } },
 									{ userEnteredValue: { stringValue: 'Image2' } },
@@ -161,20 +162,7 @@ async function initSheet(sheets, spreadsheetId) {
 						fields: 'userEnteredValue',
 					},
 				},
-				{
-					updateDimensionProperties: {
-						range: {
-							sheetId: SHEET_ID,
-							dimension: 'COLUMNS',
-							startIndex: 3,
-							endIndex: 4,
-						},
-						properties: {
-							pixelSize: 350,
-						},
-						fields: 'pixelSize',
-					},
-				},
+				// Column width settings
 				{
 					updateDimensionProperties: {
 						range: {
@@ -189,6 +177,65 @@ async function initSheet(sheets, spreadsheetId) {
 						fields: 'pixelSize',
 					},
 				},
+				{
+					updateDimensionProperties: {
+						range: {
+							sheetId: SHEET_ID,
+							dimension: 'COLUMNS',
+							startIndex: 3,
+							endIndex: 4,
+						},
+						properties: {
+							pixelSize: 50,
+						},
+						fields: 'pixelSize',
+					},
+				},
+				{
+					updateDimensionProperties: {
+						range: {
+							sheetId: SHEET_ID,
+							dimension: 'COLUMNS',
+							startIndex: 4,
+							endIndex: 5,
+						},
+						properties: {
+							pixelSize: 350,
+						},
+						fields: 'pixelSize',
+					},
+				},
+				// Rarity highlight color
+				{
+					'addConditionalFormatRule': {
+						'rule': {
+							'ranges': [
+								{
+									'sheetId': SHEET_ID,
+									'startRowIndex': 1,
+									'startColumnIndex': 0,
+								},
+							],
+							'booleanRule': {
+								'condition': {
+									'type': 'CUSTOM_FORMULA',
+									'values': [
+										{ userEnteredValue: '=$D2="SSR"' },
+									],
+								},
+								'format': {
+									'backgroundColor': {
+										'red': 0.65,
+										'green': 0.21,
+										'blue': 0.15,
+									},
+								},
+							},
+						},
+						'index': 0,
+					},
+				},
+
 			],
 		},
 	});
@@ -202,6 +249,7 @@ async function appendData(userContext, data) {
 		lodestoneId: data.lodestoneId,
 		lodestoneUrl: data.lodestoneUrl,
 		fflogsLink: data.fflogsLink,
+		rarity: data.rarity,
 		comment: data.comment,
 		images: data.images,
 		reporterName: data.reporterName,
@@ -225,6 +273,7 @@ async function appendData(userContext, data) {
 					playerName,
 					dataToAppend.lodestoneId,
 					fflogsLink,
+					dataToAppend.rarity,
 					dataToAppend.comment ? dataToAppend.comment : ' ',
 					images[0] ? images[0] : ' ',
 					images[1] ? images[1] : ' ',

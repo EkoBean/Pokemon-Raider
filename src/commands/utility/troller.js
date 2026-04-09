@@ -110,6 +110,7 @@ module.exports = {
 			return;
 		}
 
+		// Spreadsheet sector
 		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
 
 		const dbToken = guildId ? getGuildToken(guildId) : getPersonalToken(userId);
@@ -123,6 +124,7 @@ module.exports = {
 				lodestoneId: lodestoneId,
 				lodestoneUrl: lodestoneUrl,
 				fflogsLink: fflogsLink,
+				rarity: rarity,
 				comment: comment ? comment : '',
 				images: images,
 				reporterName: reporter.name,
@@ -141,6 +143,8 @@ module.exports = {
 
 		}
 
+
+		// Discord response sector
 		const embedData = JSON.parse(JSON.stringify(template.embed));
 		embedData.title = `${playerInfo.name} @${playerInfo.world}`;
 		embedData.url = lodestoneUrl;
