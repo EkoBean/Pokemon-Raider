@@ -4,6 +4,8 @@ const { savePersonalToken, saveGuildToken } = require('./src/db/tokenQuery.js');
 const express = require('express');
 const app = express();
 const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+const fs = require('node:fs');
+
 const port = redirectUri ? new URL(redirectUri).port : 3000;
 
 // oAuth callback endpoint
@@ -25,8 +27,9 @@ app.get('/callback', async (req, res) => {
 		else {
 			console.error('Invalid state: both userId and guildId are present or both are missing.');
 		}
-		res.send('OAuth callback received!');
-
+		const redirectUrl = state.guildId ? `https://discord.com/channels/${state.guildId}/` : 'https://discord.com/channels/@me/';
+		const redirectHtml = fs.readFileSync('./assets/oAuthRedirect.html', 'utf8').replace(/\{\{redirectUrl\}\}/g, redirectUrl);
+		res.send(redirectHtml);
 
 	}
 	catch (error) {
