@@ -3,22 +3,26 @@ const { savePersonalToken, saveGuildToken } = require('./src/db/tokenQuery.js');
 
 const express = require('express');
 const app = express();
-// const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 const fs = require('node:fs');
+
+const privacyPolicy = fs.readFileSync('./doc/privacy-policy.md', 'utf8');
 
 const port = process.env.PORT || 3000;
 // home page
 app.get('/', (req, res) => {
-	res.send('Pokemon Raider Bot');
+	res.send(`
+        <h1>Pokemon Raider Bot</h1>
+        <p>A Discord bot that allows users to read and edit Google Sheets.</p>
+        <a href="/privacy">Privacy Policy</a>
+		<p></p>
+        <a href="https://github.com/EkoBean/Pokemon-Raider">GitHub Repository to View how to use this Discord Bot</a>
+    `);
 });
 
 // privacy policy
 app.get('/privacy', (req, res) => {
-	res.send(`Privacy Policy
-
-This bot accesses Google Sheets on behalf of users who authorize it.
-We do not store your data beyond the active session.
-Contact: https://github.com/EkoBean/Pokemon-Raider/issues`);
+	res.send(privacyPolicy);
 });
 
 // oAuth callback endpoint
