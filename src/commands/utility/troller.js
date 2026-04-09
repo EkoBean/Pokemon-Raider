@@ -26,6 +26,20 @@ module.exports = {
 						'zh-TW': '輸入戳仔的Lodestone號碼。',
 					}).setRequired(true))
 		.addStringOption(
+			option => option.setName('rarity')
+				.setDescription('Rate your pokemon with a rarity level with N, R, SR, SSR (Default is N).')
+				.setDescriptionLocalizations(
+					{
+						'zh-TW': '為你的寶可夢評價N R SR SSR稀有度（預設為N卡）。',
+					})
+				.addChoices(
+					{ name: 'N', value: 'N' },
+					{ name: 'R', value: 'R' },
+					{ name: 'SR', value: 'SR' },
+					{ name: 'SSR', value: 'SSR' },
+				)
+				.setRequired(false))
+		.addStringOption(
 			option => option.setName('comment')
 				.setDescription('A comment about this player. (Optional)')
 				.setDescriptionLocalizations(
@@ -66,6 +80,9 @@ module.exports = {
 		const playerInfo = await playerSearch(lodestoneId);
 		const guildId = interaction.guildId ?? null;
 		const userId = interaction.user.id;
+		const rarity = interaction.options.getString('rarity') || 'N';
+		const errorContact = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../assets/errorContact.json'), 'utf-8').trim());
+		const errorContactLocale = errorContact[locale] || errorContact['en-US'];
 
 		const images = [screenshot1?.url, screenshot2?.url, screenshot3?.url].filter(Boolean);
 		const reporter = { name: interaction.user.username, avatar: interaction.user.displayAvatarURL() };
@@ -86,8 +103,8 @@ module.exports = {
 		}
 		if (!playerInfo) {
 			await interaction.reply(locale === 'zh-TW'
-				? { content: '查詢發生未知錯誤，請聯絡管理員。', flags: MessageFlags.Ephemeral }
-				: { content: 'Unknown error occurred. Please contact admin.', flags: MessageFlags.Ephemeral },
+				? { content: errorContactLocale, flags: MessageFlags.Ephemeral }
+				: { content: errorContactLocale, flags: MessageFlags.Ephemeral },
 			);
 			return;
 		}
@@ -115,8 +132,8 @@ module.exports = {
 			catch (error) {
 				console.error('Error appending to sheet:', error);
 				await interaction.reply(locale === 'zh-TW'
-					? { content: '將資料寫入試算表時發生錯誤，請至GitHub回報錯誤。https://github.com/EkoBean/Pokemon-Raider/issues', flags: MessageFlags.Ephemeral }
-					: { content: 'Error writing to spreadsheet. Please report the issue on GitHub. https://github.com/EkoBean/Pokemon-Raider/issues', flags: MessageFlags.Ephemeral },
+					? { content: errorContactLocale, flags: MessageFlags.Ephemeral }
+					: { content: errorContactLocale, flags: MessageFlags.Ephemeral },
 				);
 				return;
 			}
