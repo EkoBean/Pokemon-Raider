@@ -81,6 +81,7 @@ module.exports = {
 		const guildId = interaction.guildId ?? null;
 		const userId = interaction.user.id;
 		const rarity = interaction.options.getString('rarity') || 'N';
+		const rarityIcons = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../assets/RarityImageMap.json'), 'utf-8').trim());
 		const errorContact = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../assets/errorContact.json'), 'utf-8').trim());
 		const errorContactLocale = errorContact[locale] || errorContact['en-US'];
 
@@ -150,18 +151,19 @@ module.exports = {
 		embedData.description = comment;
 		embedData.fields[0].value = lodestoneId;
 		embedData.fields[1].value = `[${playerInfo?.name}](${fflogsLink})`;
+		embedData.image.url = rarityIcons[rarity] || rarityIcons['N'];
 
 
 		await interaction.reply(locale === 'zh-TW'
 			? {
 				content: `
-                    **收服到寶可夢了！**
+                    **收服到稀有度${rarity}的寶可夢了！**
                     `,
 				embeds: [embedData],
 				files: images,
 			} : {
 				content: `
-                    **Caught a Pokémon!**
+                    **Caught a Pokémon of rarity ${rarity}!**
                     `,
 				embeds: [embedData],
 				files: images,
