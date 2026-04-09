@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { playerSearch } = require('../../utils/playerSearch.js');
 const { fflogsSearch } = require('../../utils/fflogsSearch.js');
+const { getPersonalToken, getGuildToken } = require('../../db/tokenQuery.js');
+const { appendData } = require('../../utils/googleSheets.js');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -23,6 +25,20 @@ module.exports = {
 					{
 						'zh-TW': '輸入戳仔的Lodestone號碼。',
 					}).setRequired(true))
+		.addStringOption(
+			option => option.setName('rarity')
+				.setDescription('Rate your pokemon with a rarity level with N, R, SR, SSR (Default is N).')
+				.setDescriptionLocalizations(
+					{
+						'zh-TW': '為你的寶可夢評價N R SR SSR稀有度（預設為N卡）。',
+					})
+				.addChoices(
+					{ name: 'N', value: 'N' },
+					{ name: 'R', value: 'R' },
+					{ name: 'SR', value: 'SR' },
+					{ name: 'SSR', value: 'SSR' },
+				)
+				.setRequired(false))
 		.addStringOption(
 			option => option.setName('comment')
 				.setDescription('A comment about this player. (Optional)')
@@ -54,15 +70,22 @@ module.exports = {
 	cooldown: 5,
 	dev: false,
 	async execute(interaction) {
-		const lodestoneUrl = 'https://na.finalfantasyxiv.com/lodestone/character/';
-		const locale = interaction.locale || interaction.user?.locale || 'en-US';
 		const lodestoneId = interaction.options.getInteger('lodestone_id');
+		const lodestoneUrl = lodestoneId ? 'https://na.finalfantasyxiv.com/lodestone/character/' + lodestoneId : null;
+		const locale = interaction.locale || interaction.user?.locale || 'en-US';
 		const comment = interaction.options.getString('comment') || '';
 		const screenshot1 = interaction.options.getAttachment('screenshot1');
 		const screenshot2 = interaction.options.getAttachment('screenshot2');
 		const screenshot3 = interaction.options.getAttachment('screenshot3');
 		const playerInfo = await playerSearch(lodestoneId);
+		const guildId = interaction.guildId ?? null;
+		const userId = interaction.user.id;
+		const rarity = interaction.options.getString('rarity') || 'N';
+		const rarityIcons = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../assets/RarityImageMap.json'), 'utf-8').trim());
+		const errorContact = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../assets/errorContact.json'), 'utf-8').trim());
+		const errorContactLocale = errorContact[locale] || errorContact['en-US'];
 
+		const images = [screenshot1?.url, screenshot2?.url, screenshot3?.url].filter(Boolean);
 		const reporter = { name: interaction.user.username, avatar: interaction.user.displayAvatarURL() };
 
 		if (playerInfo >= 404 && playerInfo < 500) {
@@ -81,17 +104,50 @@ module.exports = {
 		}
 		else if (!playerInfo) {
 			await interaction.reply(locale === 'zh-TW'
-				? { content: '查詢發生未知錯誤，請聯絡管理員。', flags: MessageFlags.Ephemeral }
-				: { content: 'Unknown error occurred. Please contact admin.', flags: MessageFlags.Ephemeral },
+				? { content: errorContactLocale, flags: MessageFlags.Ephemeral }
+				: { content: errorContactLocale, flags: MessageFlags.Ephemeral },
 			);
 			return;
 		}
 
+		// Spreadsheet sector
 		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
 
+		const dbToken = guildId ? getGuildToken(guildId) : getPersonalToken(userId);
+
+		if (dbToken) {
+			const userContext = guildId ?
+				{ guildId, userId: null } :
+				{ guildId: null, userId };
+			const dataToAppend = {
+				characterName: playerInfo.name,
+				lodestoneId: lodestoneId,
+				lodestoneUrl: lodestoneUrl,
+				fflogsLink: fflogsLink,
+				rarity: rarity,
+				comment: comment ? comment : '',
+				images: images,
+				reporterName: reporter.name,
+			};
+			try {
+				await appendData(userContext, dataToAppend);
+			}
+			catch (error) {
+				console.error('Error appending to sheet:', error);
+				await interaction.reply(locale === 'zh-TW'
+					? { content: errorContactLocale, flags: MessageFlags.Ephemeral }
+					: { content: errorContactLocale, flags: MessageFlags.Ephemeral },
+				);
+				return;
+			}
+
+		}
+
+
+		// Discord response sector
 		const embedData = JSON.parse(JSON.stringify(template.embed));
 		embedData.title = `${playerInfo.name} @${playerInfo.world}`;
-		embedData.url = lodestoneUrl + lodestoneId;
+		embedData.url = lodestoneUrl;
 		embedData.timestamp = new Date().toISOString();
 		embedData.footer.text = reporter.name;
 		embedData.footer.icon_url = reporter.avatar;
@@ -99,31 +155,25 @@ module.exports = {
 		embedData.description = comment;
 		embedData.fields[0].value = lodestoneId;
 		embedData.fields[1].value = `[${playerInfo?.name}](${fflogsLink})`;
+		embedData.image.url = rarityIcons[rarity] || rarityIcons['N'];
 
 
-		const images = [screenshot1?.url, screenshot2?.url, screenshot3?.url].filter(Boolean);
-		if (locale === 'zh-TW') {
-			await interaction.reply(
-				{
-					content: `
-                    **收服到寶可夢了！**
+		await interaction.reply(locale === 'zh-TW'
+			? {
+				content: `
+                    **收服到稀有度${rarity}的寶可夢了！**
                     `,
-					embeds: [embedData],
-					files: images,
-				},
-			);
-		}
-		else {
-			await interaction.reply(
-				{
-					content: `
-                    **Caught a Pokémon!**
+				embeds: [embedData],
+				files: images,
+			} : {
+				content: `
+                    **Caught a Pokémon of rarity ${rarity}!**
                     `,
-					embeds: [embedData],
-					files: images,
-				},
+				embeds: [embedData],
+				files: images,
+			},
+		);
 
-			);
-		}
+
 	},
 };
