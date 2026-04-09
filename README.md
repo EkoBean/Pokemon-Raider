@@ -14,14 +14,16 @@
 
 讓傷殺力一目瞭然！
 
-<img width="469" height="888" alt="Screenshot 2026-04-10 010204" src="https://github.com/user-attachments/assets/4e39897a-266c-4028-9ec8-790c93a30e11" />
+<img width="469" height="888" alt="Screenshot 2026-04-10 010204" src="https://github.com/user-attachments/assets/4471ff0c-b856-4e0a-9115-6c315a4c04b5" />
 
 
 ## 讓Pokemon Raider 替你管理Google表單，集中蒐集你的野團寶可夢！
 成為神奇寶貝訓練家就從一張整齊的表單開始。
 
 建立踩雷資料庫，再也不用擔心黑單滿出來！
-<img width="469" height="888" alt="Screenshot 2026-04-10 010204" src="https://github.com/user-attachments/assets/4471ff0c-b856-4e0a-9115-6c315a4c04b5" />
+
+<img width="1795" height="514" alt="Screenshot 2026-04-10 010518" src="https://github.com/user-attachments/assets/830975bc-0d33-46b5-96f4-df3152deaada" />
+
 
 ### ``/setup``
 在Discord對話頻道中，使用setup對話指令，複製貼上既有表單的連結，即可開始進行Google表單授權步驟。
