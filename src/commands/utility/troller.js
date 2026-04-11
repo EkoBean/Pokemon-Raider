@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { playerSearch } = require('../../utils/playerSearch.js');
-const { fflogsSearch } = require('../../utils/fflogsSearch.js');
+const { fflogsSearch } = require('../../utils/fflogsSearcjh.js');
 const { getPersonalToken, getGuildToken } = require('../../db/tokenQuery.js');
 const { appendData } = require('../../utils/googleSheets.js');
 const path = require('node:path');

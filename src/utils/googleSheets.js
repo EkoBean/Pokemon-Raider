@@ -307,17 +307,20 @@ async function refreshNameAndLinks(userContext) {
 	const lodestoneIds = refreshData.data.valueRanges[0].values || [];
 	const oldNames = playerNames.data.valueRanges[0].values || [];
 
-	const updateRequests = lodestoneIds.map((row, index) => {
+	const updateRequests = lodestoneIds.map(async (row, index) => {
 		const lodestoneId = row[0].trim() ?? null;
 		if (!lodestoneId || !/^\d+$/.test(lodestoneId)) return null;
 
-		const playerInfo = playerSearch(lodestoneId);
+		const playerInfo = await playerSearch(lodestoneId);
+		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
+		const playerOldName = oldNames[index] ? oldNames[index][0] : null;
+		const playerName = playerInfo ? playerInfo.name : oldNames[index] ? oldNames[index][0] : 'Unknown';
 		return (
 			{
 				'range': `'Pokemon Bank'!A${index + 2},C${index + 2}`,
 				'values': [
-					`'=HYPERLINK("https://na.finalfantasyxiv.com/lodestone/character/${lodestoneId}", "${oldNames[index] || 'Unknown'}")'`,
-					`'=HYPERLINK("https://www.fflogs.com/character/${lodestoneId}", "FFLogs")'`],
+					`'=HYPERLINK("https://na.finalfantasyxiv.com/lodestone/character/${lodestoneId}", "${playerName}")'`,
+					`'=HYPERLINK("${fflogsLink}", "FFLogs")'`],
 			}).filter(Boolean);
 
 	});
@@ -328,6 +331,37 @@ async function refreshNameAndLinks(userContext) {
 		'data': updateRequests,
 
 	});
+
+	const nameChangeNote = await sheets.spreadsheets.batchUpdate(
+		{
+			spreadsheetId,
+			resource: {
+				requests: [
+					{
+						'updateCells': {
+							'range': {
+								'sheetId': ,
+								'startRowIndex': 0,
+								'endRowIndex': 1,
+								'startColumnIndex': 0,
+								'endColumnIndex': 1,
+							},
+							'rows': [
+								{
+									'values': [
+										{
+											'note': 'This is your new cell note',
+										},
+									],
+								},
+							],
+							'fields': 'note',
+						},
+					},
+				],
+			},
+		},
+	);
 	return lodestoneIds;
 }
 module.exports = { getMetaData, appendData, refreshNameAndLinks };
