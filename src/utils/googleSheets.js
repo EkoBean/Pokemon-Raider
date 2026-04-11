@@ -3,6 +3,7 @@ const { getPersonalToken, getGuildToken } = require('../db/tokenQuery');
 const { createAuthClient } = require('./googleAuth');
 const { decrypt } = require('./encrypt');
 const { playerSearch } = require('./playerSearch.js');
+const { fflogsLinkParse } = require('./fflogsLinkParse.js');
 
 function getSheetClient(userContext) {
 	const { userId, guildId } = userContext;
@@ -226,20 +227,22 @@ async function initSheet(sheets, spreadsheetId) {
 	return formatInit;
 }
 
-async function getMetaData(userContext) {
+async function getMetaData(userContext, field) {
 	const { sheets, spreadsheetId } = getSheetClient(userContext);
 
 	const response = await sheets.spreadsheets.get({
 		spreadsheetId,
+		fields: field ? field : 'sheets.properties',
 	});
 	return response.data;
 }
 
-async function getSheetData(userContext, range) {
+async function getSheetData(userContext, range, valueRenderOption = 'FORMULA') {
 	const { sheets, spreadsheetId } = getSheetClient(userContext);
 	const response = await sheets.spreadsheets.values.get({
 		spreadsheetId,
 		range,
+		valueRenderOption,
 	});
 	return response.data.values;
 }
@@ -305,63 +308,116 @@ async function refreshNameAndLinks(userContext) {
 	});
 
 	const lodestoneIds = refreshData.data.valueRanges[0].values || [];
-	const oldNames = playerNames.data.valueRanges[0].values || [];
 
-	const updateRequests = lodestoneIds.map(async (row, index) => {
-		const lodestoneId = row[0].trim() ?? null;
-		if (!lodestoneId || !/^\d+$/.test(lodestoneId)) return null;
+	// generate the update data array
+	const updateRequests = [];
+	for (const [index, row] of lodestoneIds.entries()) {
+		const lodestoneId = row[0]?.trim() ?? null;
+		if (!lodestoneId || !/^\d+$/.test(lodestoneId)) continue;
 
 		const playerInfo = await playerSearch(lodestoneId);
-		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
-		const playerOldName = oldNames[index] ? oldNames[index][0] : null;
-		const playerName = playerInfo ? playerInfo.name : oldNames[index] ? oldNames[index][0] : 'Unknown';
-		return (
-			{
-				'range': `'Pokemon Bank'!A${index + 2},C${index + 2}`,
-				'values': [
-					`'=HYPERLINK("https://na.finalfantasyxiv.com/lodestone/character/${lodestoneId}", "${playerName}")'`,
-					`'=HYPERLINK("${fflogsLink}", "FFLogs")'`],
-			}).filter(Boolean);
+		if (!playerInfo) continue;
 
+		const fflogsLink = await fflogsLinkParse(playerInfo.name, playerInfo.world, playerInfo.dc);
+		const playerName = playerInfo.name || oldNames[index]?.[0] || 'Unknown';
+
+		updateRequests.push({
+			range: `'Pokemon Bank'!A${index + 2}:C${index + 2}`,
+			values: [[
+				`=HYPERLINK("https://na.finalfantasyxiv.com/lodestone/character/${lodestoneId}", "${playerName}")`,
+				lodestoneId,
+				`=HYPERLINK("${fflogsLink}", "FFLogs")`,
+			]],
+		});
+		await new Promise(resolve => setTimeout(resolve, 50));
+	}
+
+	const currentData = await getSheetData(userContext, '\'Pokemon Bank\'!A2:C');
+	const currentDataFormat = currentData.map(row => {
+		const newRow = [...row];
+		newRow[1] = String(newRow[1]);
+		return newRow;
 	});
 
-	const refeshResponse = await sheets.spreadsheets.values.batchUpdate({
-		'spreadsheetId': spreadsheetId,
-		'valueInputOption': 'USER_ENTERED',
-		'data': updateRequests,
+	const filterData = updateRequests.map((row, index) => {
+		const newRow = row.values[0];
+		const oldRow = currentDataFormat[index] || [];
+		if (newRow.every((value, idx) => value === oldRow[idx])) return;
+		return row;
+	}).filter(Boolean);
 
+	if (updateRequests.length === 0) return null;
+
+	console.log('查詢完成，開始更新資料表。');
+	await sheets.spreadsheets.values.batchUpdate({
+		spreadsheetId: spreadsheetId,
+		resource: {
+			valueInputOption: 'USER_ENTERED',
+			data: filterData,
+		},
 	});
 
-	const nameChangeNote = await sheets.spreadsheets.batchUpdate(
-		{
-			spreadsheetId,
-			resource: {
-				requests: [
+	const getNotes = await sheets.spreadsheets.get({
+		spreadsheetId,
+		ranges: ['\'Pokemon Bank\'!A2:A'],
+		fields: 'sheets(data(rowData(values(note))))',
+	});
+
+	const oldNotesObjects = getNotes.data.sheets[0].data[0].rowData?.map(row => {
+		return ({
+			cell: `A${getNotes.data.sheets[0].data[0].rowData.indexOf(row) + 2}`,
+			note: row.values && row.values[0] && row.values[0].note ? row.values[0].note : null,
+		});
+	},
+	).filter(Boolean) ?? [];
+
+	const metaData = await getMetaData(userContext);
+	const SHEET_ID = metaData.sheets.filter(sheet => sheet.properties.title === 'Pokemon Bank')[0]?.properties.sheetId;
+
+	// parse the object need to add name changing note
+	const oldNames = playerNames.data.valueRanges[0].values || [];
+
+	// array of object
+	const noteRequest = filterData.map(row => {
+		const matchCell = row.range.match(/A(\d+):C\d+/)[1];
+		if (!matchCell) return null;
+		const oldName = (oldNames[matchCell - 2] && oldNames[matchCell - 2][0]) || '';
+		const newName = row.values[0][0] = row.values[0][0].match(/,\s*"([^"]+ [^"]+)"\)$/)[1];
+		if (oldName === newName) return null;
+
+		const oldNote = oldNotesObjects.find(object => object.cell === `A${matchCell}`)?.note || '';
+		const newNote = `${oldNote ? oldNote + '\n' : ''}${oldName}`;
+		return {
+			'updateCells': {
+				'range': {
+					'sheetId': SHEET_ID,
+					'startRowIndex': matchCell - 1,
+					'endRowIndex': matchCell,
+					'startColumnIndex': 0,
+					'endColumnIndex': 1,
+				},
+				'rows': [
 					{
-						'updateCells': {
-							'range': {
-								'sheetId': ,
-								'startRowIndex': 0,
-								'endRowIndex': 1,
-								'startColumnIndex': 0,
-								'endColumnIndex': 1,
+						'values': [
+							{
+								'note': newNote,
 							},
-							'rows': [
-								{
-									'values': [
-										{
-											'note': 'This is your new cell note',
-										},
-									],
-								},
-							],
-							'fields': 'note',
-						},
+						],
 					},
 				],
+				'fields': 'note',
 			},
+		};
+	}).filter(Boolean);
+
+	if (noteRequest.length === 0) return 'no name changes detected';
+	await sheets.spreadsheets.batchUpdate({
+		spreadsheetId,
+		resource: {
+			requests: noteRequest,
 		},
-	);
-	return lodestoneIds;
+	});
+
+	return 'update complete';
 }
 module.exports = { getMetaData, appendData, refreshNameAndLinks };

@@ -17,10 +17,11 @@ async function test() {
 	// console.log(result);
 
 	// const metaData = await getMetaData(userContext);
-	// console.log(metaData);
+	// console.log(metaData.sheets.filter(sheet => sheet.properties.title === 'Pokemon Bank')[0]?.properties.sheetId);
 
 	const refreshData = await refreshNameAndLinks(userContext);
-	console.log(refreshData);
+	// console.log(refreshData);
+	console.dir(refreshData, { depth: null });
 
 }
 try {

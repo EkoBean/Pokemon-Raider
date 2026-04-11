@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { playerSearch } = require('../../utils/playerSearch.js');
-const { fflogsSearch } = require('../../utils/fflogsSearcjh.js');
+const { fflogsLinkParse } = require('../../utils/fflogsLinkParse.js');
 const { getPersonalToken, getGuildToken } = require('../../db/tokenQuery.js');
 const { appendData } = require('../../utils/googleSheets.js');
 const path = require('node:path');
@@ -111,7 +111,7 @@ module.exports = {
 		}
 
 		// Spreadsheet sector
-		const fflogsLink = await fflogsSearch(playerInfo.name, playerInfo.world, playerInfo.dc);
+		const fflogsLink = await fflogsLinkParse(playerInfo.name, playerInfo.world, playerInfo.dc);
 
 		const dbToken = guildId ? getGuildToken(guildId) : getPersonalToken(userId);
 

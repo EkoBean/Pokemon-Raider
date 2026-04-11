@@ -2,7 +2,7 @@ const fflogsUrl = 'https://www.fflogs.com/character';
 const RegionDataCenter = require('../../assets/regionDataCenter.json');
 
 module.exports = {
-	async fflogsSearch(characterName, worldName, dataCenter) {
+	async fflogsLinkParse(characterName, worldName, dataCenter) {
 		const character = characterName.toLowerCase().split(' ');
 
 		const region = Object.keys(RegionDataCenter).find(regionName => RegionDataCenter[regionName].includes(dataCenter))?.toLowerCase();
