@@ -2,6 +2,7 @@ const { google } = require('googleapis');
 const { getPersonalToken, getGuildToken } = require('../db/tokenQuery');
 const { createAuthClient } = require('./googleAuth');
 const { decrypt } = require('./encrypt');
+const { playerSearch } = require('./playerSearch.js');
 
 function getSheetClient(userContext) {
 	const { userId, guildId } = userContext;
@@ -23,24 +24,6 @@ function getLocalDateTimeString() {
 	return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
-async function getMetaData(userContext) {
-	const { sheets, spreadsheetId } = getSheetClient(userContext);
-
-	const response = await sheets.spreadsheets.get({
-		spreadsheetId,
-	});
-	return response.data;
-}
-
-async function getSheetData(userContext, range) {
-	const { sheets, spreadsheetId } = getSheetClient(userContext);
-	const response = await sheets.spreadsheets.values.get({
-		spreadsheetId,
-		range,
-	});
-	return response.data.values;
-}
-
 async function initSheet(sheets, spreadsheetId) {
 	const newSheet = await sheets.spreadsheets.batchUpdate({
 		spreadsheetId,
@@ -57,6 +40,7 @@ async function initSheet(sheets, spreadsheetId) {
 		},
 	});
 	const SHEET_ID = newSheet.data.replies[0].addSheet.properties.sheetId;
+
 	const formatInit = await sheets.spreadsheets.batchUpdate({
 		spreadsheetId,
 		resource: {
@@ -105,9 +89,9 @@ async function initSheet(sheets, spreadsheetId) {
 						'cell': {
 							'userEnteredFormat': {
 								'backgroundColor': {
-									'red': 1.0,
-									'green': 0.94,
-									'blue': 0.8,
+									'red': 0.956,
+									'green': 0.780,
+									'blue': 0.764,
 								},
 								'horizontalAlignment': 'LEFT',
 								'textFormat': {
@@ -242,6 +226,25 @@ async function initSheet(sheets, spreadsheetId) {
 	return formatInit;
 }
 
+async function getMetaData(userContext) {
+	const { sheets, spreadsheetId } = getSheetClient(userContext);
+
+	const response = await sheets.spreadsheets.get({
+		spreadsheetId,
+	});
+	return response.data;
+}
+
+async function getSheetData(userContext, range) {
+	const { sheets, spreadsheetId } = getSheetClient(userContext);
+	const response = await sheets.spreadsheets.values.get({
+		spreadsheetId,
+		range,
+	});
+	return response.data.values;
+}
+
+
 async function appendData(userContext, data) {
 	const { sheets, spreadsheetId } = getSheetClient(userContext);
 	const dataToAppend = {
@@ -289,5 +292,42 @@ async function appendData(userContext, data) {
 
 }
 
+async function refreshNameAndLinks(userContext) {
+	const { sheets, spreadsheetId } = getSheetClient(userContext);
 
-module.exports = { getMetaData, appendData };
+	const refreshData = await sheets.spreadsheets.values.batchGet({
+		spreadsheetId: spreadsheetId,
+		ranges: ['\'Pokemon Bank\'!B2:B'],
+	});
+	const playerNames = await sheets.spreadsheets.values.batchGet({
+		spreadsheetId: spreadsheetId,
+		ranges: ['\'Pokemon Bank\'!A2:A'],
+	});
+
+	const lodestoneIds = refreshData.data.valueRanges[0].values || [];
+	const oldNames = playerNames.data.valueRanges[0].values || [];
+
+	const updateRequests = lodestoneIds.map((row, index) => {
+		const lodestoneId = row[0].trim() ?? null;
+		if (!lodestoneId || !/^\d+$/.test(lodestoneId)) return null;
+
+		const playerInfo = playerSearch(lodestoneId);
+		return (
+			{
+				'range': `'Pokemon Bank'!A${index + 2},C${index + 2}`,
+				'values': [
+					`'=HYPERLINK("https://na.finalfantasyxiv.com/lodestone/character/${lodestoneId}", "${oldNames[index] || 'Unknown'}")'`,
+					`'=HYPERLINK("https://www.fflogs.com/character/${lodestoneId}", "FFLogs")'`],
+			}).filter(Boolean);
+
+	});
+
+	const refeshResponse = await sheets.spreadsheets.values.batchUpdate({
+		'spreadsheetId': spreadsheetId,
+		'valueInputOption': 'USER_ENTERED',
+		'data': updateRequests,
+
+	});
+	return lodestoneIds;
+}
+module.exports = { getMetaData, appendData, refreshNameAndLinks };
